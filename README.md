@@ -3,6 +3,8 @@
 The first-party Laravel Slack channel only supports the limited Incoming Webhooks integration. This package uses the
 Chat Post Message api to send a message to any channel in your workspace as long as you have the Channel ID.
 
+I have also made a Nova 4 package to easily retrieve Slack Channel IDs for use in this package [here](https://github.com/brandonjbegle/nova-4-slack-channel-field)
+
 This package is a WIP. Some Block types are implemented to make it easier to compose messages, but currently only one (
 SectionBlock) allows (only, for now) arrays. I have provided an
 example Notification [here](./examples/HealthStatusChangedNotification.php)
@@ -31,6 +33,8 @@ SLACK_OAUTH_TOKEN=############################
 ```
 
 ## Usage
+
+### Create a notification 
 
 ```php
 class HealthStatusChangedNotification extends Notification
@@ -96,4 +100,22 @@ class HealthStatusChangedNotification extends Notification
 }
 
 
+```
+
+### Add Notifiable trait to your model
+```php
+class Site extends Model
+{
+    use Notifiable;
+```
+### Add routeNotificationForSlackApp method to your model
+```php
+public function routeNotificationForSlackApp()
+    {
+        // If you use the Nova 4 field, this will get the id of the Channel, otherwise simply return the id
+        if ($this->slack_notification_channel) {
+            return $this->slack_notification_channel['value'] ?? null ;
+        }
+        return null;
+    }
 ```
