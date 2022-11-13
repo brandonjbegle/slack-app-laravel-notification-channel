@@ -1,38 +1,18 @@
-# Slack App Notification Channel (WIP)
+<?php
 
-The first-party Laravel Slack channel only supports the limited Incoming Webhooks integration. This package uses the
-Chat Post Message api to send a message to any channel in your workspace as long as you have the Channel ID.
+namespace App\Notifications;
 
-This package is a WIP. Some Block types are implemented to make it easier to compose messages, but currently only one (
-SectionBlock) allows (only, for now) arrays. I have provided an
-example Notification [here](./examples/HealthStatusChangedNotification.php)
+use App\Models\Site;
+use BrandonJBegle\SlackNotificationChannel\Blocks\ContextBlock;
+use BrandonJBegle\SlackNotificationChannel\Blocks\ContextBlock\ContextBlockImage;
+use BrandonJBegle\SlackNotificationChannel\Blocks\ContextBlock\ContextBlockText;
+use BrandonJBegle\SlackNotificationChannel\Blocks\HeaderBlock;
+use BrandonJBegle\SlackNotificationChannel\Blocks\SectionBlock;
+use BrandonJBegle\SlackNotificationChannel\Channels\SlackAppChannel;
+use BrandonJBegle\SlackNotificationChannel\Messages\SlackAppMessage;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 
-## Installation
-
-You can install the package in to a Laravel app that uses Nova via composer:
-
-```bash
-composer require brandonjbegle/slack-app-laravel-notification-channel
-```
-
-Now publish config file:
-
-```shell
-php artisan vendor:publish --provider="BrandonJBegle\SlackNotificationChannel\SlackAppChannelServiceProvider"
-```
-
-Create a Slack App, install it to your workspace, and retrieve your bot token.
-[Complete Instructions Here](./docs/SLACK.md)
-
-Add the key and token to your `.env` file
-
-```shell
-SLACK_OAUTH_TOKEN=############################
-```
-
-## Usage
-
-```php
 class HealthStatusChangedNotification extends Notification
 {
     use Queueable;
@@ -94,6 +74,3 @@ class HealthStatusChangedNotification extends Notification
             ]);
     }
 }
-
-
-```
