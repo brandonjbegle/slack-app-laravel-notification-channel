@@ -4,9 +4,16 @@ namespace BrandonJBegle\SlackNotificationChannel\Channels;
 
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
+use JoliCode\Slack\ClientFactory;
 
 class SlackAppChannel
 {
+    protected $client;
+
+    public function __construct()
+    {
+        $this->client = ClientFactory::create(config('slack-app-notification-channel.token'));
+    }
 
     /**
      * Send the given notification.
@@ -20,9 +27,7 @@ class SlackAppChannel
         if (!$channel = $notifiable->routeNotificationFor('slackApp', $notification)) {
             return;
         }
-        Log::Info($this->buildPayload($channel, $notification->toSlackApp($notifiable)));
-//        Todo: this will need to be without the facade for the package
-        return Slack::chatPostMessage($this->buildPayload($channel, $notification->toSlackApp($notifiable)));
+        return $this->client->chatPostMessage($this->buildPayload($channel, $notification->toSlackApp($notifiable)));
     }
 
     protected function buildPayload($channel, $content)
